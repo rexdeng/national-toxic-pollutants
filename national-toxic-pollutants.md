@@ -55,6 +55,8 @@ library(maps)
     ##     map
 
 ``` r
+library(usethis)
+
 tri2018 <- read_csv("data/tri_2018_us.csv")
 ```
 
@@ -137,15 +139,21 @@ pollutants in the US.
 
 ``` r
 topten %>%
-  ggplot(aes(x13_longitude, x12_latitude, size = x54_on_site_release_total, color = x30_chemical)) +
+  filter(x30_chemical == "LEAD" | x30_chemical == "NICKEL") %>%
+  ggplot(aes(x13_longitude, x12_latitude, size = x54_on_site_release_total, color = x30_chemical
+             )) +
   geom_point() +
-  xlim(-175,-50) +
+  xlim(-125,-50) +
   labs(x = "", y = "", size = "Total Chemical Released", color = "Chemical") +
   theme_bw()
 ```
 
-    ## Warning: Removed 154 rows containing missing values (geom_point).
+    ## Warning: Removed 58 rows containing missing values (geom_point).
 
 ![](national-toxic-pollutants_files/figure-gfm/heat-map-top10-1.png)<!-- -->
+
+Questions: why is there a line running down the middle of the country?
+What is making the states past Texas so much less likely to have
+carcinogenic compound releases in the way that the East and Midwest see?
 
 \#\#\#Objective 3
