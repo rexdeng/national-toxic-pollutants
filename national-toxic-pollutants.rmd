@@ -1,0 +1,66 @@
+---
+title: "National Toxic Pollutants"
+author: "Beck Addison"
+date: "10.08.19"
+
+output: github_document
+---
+
+###Objective 0
+
+Tidy data.
+
+```{r load-packages}
+library(tidyverse)
+library(readr)
+library(janitor)
+library(ggmap)
+library(maps)
+
+tri2018 <- read_csv("data/tri_2018_us.csv")
+tri2018 <- clean_names(tri2018)
+
+usa <- map_data("usa")
+```
+###Objective 1
+
+Determine the most common toxic pollutant in the US.
+
+```{r count-toxins}
+topten <- tri2018 %>%
+
+  count(x30_chemical) %>%
+  arrange(desc(n)) %>%
+  slice(1:10) %>%
+  right_join(., tri2018) %>%
+  filter(n != "NA")
+
+topten %>%
+  ggplot(aes(x = reorder(x30_chemical, n), y = n, fill = x37_carcinogen)) +
+  geom_bar(stat = "identity") +
+  coord_flip() +
+  labs(y = "Times Detected", x = "Chemical", fill = "Carcinogen")
+```
+
+###Objective 2
+
+Develop a map showing the measurement locations of the top ten pollutants in the US.
+
+```{r heat-map-top10}
+
+topten %>%
+  ggplot(aes(x13_longitude, x12_latitude, size = x54_on_site_release_total, color = x30_chemical)) +
+  geom_point() +
+  xlim(-175,-50) +
+  labs(x = "", y = "", size = "Total Chemical Released", color = "Chemical") +
+  theme_bw()
+  
+```
+
+
+###Objective 3
+```{r frequency-by-state}
+
+```
+
+
